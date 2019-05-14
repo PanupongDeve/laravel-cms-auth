@@ -1,3 +1,3 @@
 echo "####### make Controller ###########"
 read -p 'model name: ' modelName 
-php artisan make:model $modelName
+php artisan make:model $modelName -m
