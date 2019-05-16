@@ -1,6 +1,32 @@
 version: "2"
-services: 
-  mysql: 
+services:
+  ### Nginx Server Container ##################################
+  nginx:
+    image: nginx:1.11.10
+    volumes_from:
+        - phpfpm
+    volumes:
+        - .:/usr/share/nginx/html
+        - ./nginx/conf.d:/etc/nginx/conf.d
+    ports:
+        - "8080:80"
+        - "443:443"
+    links:
+        - phpfpm
+    container_name: nginx
+### PHP-FPM Container #######################################
+  phpfpm:
+    build:
+      context: ./docker-php
+      dockerfile: Dockerfile
+    volumes:
+        - .:/usr/share/nginx/html
+    depends_on:
+        - mysql
+    links:
+        - mysql
+    container_name: phpfpm
+  mysql:
     image: mysql:5.7
     restart: always
     environment:
@@ -20,4 +46,4 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
     ports:
-      - 8080:80
+      - 8888:80
